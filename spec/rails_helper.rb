@@ -1,6 +1,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path("../dummy/config/environment", __FILE__)
+
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'spec_helper'
@@ -49,4 +50,19 @@ RSpec.configure do |config|
   # The different available types are documented in the features, such as in
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
+end
+
+#
+# FILE UPLOAD HANDLING
+#
+TEST_FILE_PATH = File.join(File.dirname(__FILE__), 'test_files')
+TEST_PUBLIC_DIR = File.join(Rails.root, 'tmp', 'test_public')
+def setup_test_public_dir
+  FileUtils.mkdir_p(TEST_PUBLIC_DIR)
+  allow(Rails).to receive(:public_path) { TEST_PUBLIC_DIR }
+end
+
+def empty_test_public_dir
+  FileUtils.rm_r(TEST_PUBLIC_DIR)
+  # undo public_path stub
 end
