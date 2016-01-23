@@ -9,10 +9,8 @@ describe ImageProfiles, :type => :model do
       img.resize '50%'
     end
 
-    @image = Image.new
-
-    allow(@image).to receive(:file_path).and_return @test_file
-    # @image.intake_file(@test_file)
+    @image = Image.create
+    @image.intake_file(@test_file)
   end
   after do
     empty_test_public_dir

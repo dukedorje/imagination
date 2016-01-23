@@ -1,16 +1,7 @@
 
 class Image < ActiveRecord::Base
   include ImageProfiles
-
-  # include ImageFileManager
-  def file_path(profile_name, options={})
-
-  end
-  def save_profile(magick_image, profile_name, options={})
-    profile_file = self.file_path(profile_name, options)
-    FileUtils.mkdir_p File.dirname(profile_file)
-    magick_image.write profile_file
-  end
+  include ImageFileManager
 
   # after_file_intake :save_metadata
 
