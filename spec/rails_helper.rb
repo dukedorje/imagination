@@ -55,14 +55,15 @@ end
 #
 # FILE UPLOAD HANDLING
 #
-TEST_FILE_PATH = File.join(File.dirname(__FILE__), 'test_files')
-TEST_PUBLIC_DIR = File.join(Rails.root, 'tmp', 'test_public')
-def setup_test_public_dir
-  FileUtils.mkdir_p(TEST_PUBLIC_DIR)
-  allow(Rails).to receive(:public_path) { TEST_PUBLIC_DIR }
-end
 
-def empty_test_public_dir
-  FileUtils.rm_r(TEST_PUBLIC_DIR)
-  # undo public_path stub
-end
+# TEST_FILE_PATH = File.join(File.dirname(__FILE__), 'test_files')
+# TEST_PUBLIC_DIR = File.join(Rails.root, 'tmp', 'test_public')
+# def setup_test_public_dir
+#   FileUtils.mkdir_p(TEST_PUBLIC_DIR)
+#   allow(Rails).to receive(:public_path) { TEST_PUBLIC_DIR }
+# end
+#
+# def empty_test_public_dir
+#   FileUtils.rm_r(TEST_PUBLIC_DIR)
+#   # undo public_path stub
+# end

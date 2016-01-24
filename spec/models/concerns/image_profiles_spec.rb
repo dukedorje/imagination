@@ -2,18 +2,22 @@ require 'rails_helper'
 
 describe ImageProfiles, :type => :model do
   before do
-    setup_test_public_dir
-    @test_file = File.join(TEST_FILE_PATH, '1f004.png') # 64x64 PNG
+    # setup_test_public_dir
+    # @test_file = File.join(TEST_FILE_PATH, '1f004.png') # 64x64 PNG
+
+    @test_file = File.join fixture_path, '1f004.png' # 64x64 PNG
 
     Image.profile(:test_profile) do |img, options|
       img.resize '50%'
     end
 
-    @image = Image.create
-    @image.intake_file(@test_file)
+    @image = Image.new
+    @image.image_file = @test_file
+    @image.save
+    # @image.intake_file(@test_file)
   end
   after do
-    empty_test_public_dir
+    # empty_test_public_dir
   end
 
   context "#profile" do

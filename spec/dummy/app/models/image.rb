@@ -1,7 +1,8 @@
 
 class Image < ActiveRecord::Base
   include ImageProfiles
-  include ImageFileManager
+  attachment :image_file
+  # include ImageFileManager
 
   # after_file_intake :save_metadata
 
@@ -119,11 +120,6 @@ class Image < ActiveRecord::Base
   # Instance Methods
   #
 
-  def magick_image(profile_name=nil, options={})
-    # Magick::ImageList.new(self.file_path(profile_name, options))
-    # MicroMagick::Image.new(self.file_path(profile_name, options))
-    MiniMagick::Image.open(self.file_path(profile_name, options))
-  end
 
   # WARNING: Edits, resizes, etc. will alter the image file directly!
   def magick_image_direct(profile_name=nil, options={})
