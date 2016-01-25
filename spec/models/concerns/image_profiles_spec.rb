@@ -32,13 +32,13 @@ describe ImageProfiles, :type => :model do
       expect( img.width ).to eq(32) # half of 64
     end
 
-    xit "caches the resized image file" do
+    it "caches the resized image file" do
       expect( File.file?(@image.file_path(:test_profile)) ).to eq(false)
       @image.generate_profile( :test_profile )
       expect( File.file?(@image.file_path(:test_profile)) ).to eq(true)
     end
 
-    xit "works on a real profile" do
+    it "works on a real profile" do
       expect{ !@image.profile_generated?(:header) }
       @image.generate_profile( :header )
       expect{ @image.profile_generated?(:header) }
@@ -46,7 +46,7 @@ describe ImageProfiles, :type => :model do
   end
 
   context "defined method" do
-    xit "works" do
+    it "works" do
       expect( File.file?(@image.file_path(:test_profile)) ).to eq(false)
       @image.test_profile
       expect( File.file?(@image.file_path(:test_profile)) ).to eq(true)

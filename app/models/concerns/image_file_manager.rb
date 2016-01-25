@@ -11,8 +11,11 @@ module ImageFileManager
   # and return the path for storage in the db
   def intake_file(src_file)
     raise ImageException.new("Not a file") if !File.file?(src_file)
-
-    # raise ImageException.new("Not an image file") if Magick::Image::read(src_file).blank?
+    begin
+      MiniMagick::Image.open(src_file)
+    rescue MiniMagick::Invalid => e
+      raise ImageException.new("Not an image file: #{e.message}")
+    end
 
     relative_upload_path = generate_relative_upload_path(src_file)
     dest_file = File.join Rails.public_path, UPLOAD_DIR, relative_upload_path

@@ -37,12 +37,10 @@ RSpec.describe ImageFileManager, :type => :model do
     end
 
     it "denies a non-image" do
-      pending
       @test_file = File.join(TEST_FILE_PATH, 'test.pdf')
       image = Image.create
 
       expect{image.intake_file(@test_file)}.to raise_error ImageException
-
     end
 
     it "handles an html file with a relative path"
