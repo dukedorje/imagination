@@ -67,8 +67,8 @@ module ImageProfiles
 
   def file_path(descriptor=nil, options={})
     if descriptor.nil?
-      byebug
-      # image_file.get
+      # byebug
+      image_file.download.path # TODO: generalize to attachment column
     end
   end
 

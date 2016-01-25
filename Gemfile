@@ -13,6 +13,8 @@ gemspec
 # To use a debugger
 group :development, :test do
   gem 'byebug'
+  gem 'pry-rails'
+  gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.3'
   gem 'mini_magick'
   gem 'refile', require: 'refile/rails'

@@ -11,9 +11,9 @@ describe ImageProfiles, :type => :model do
       img.resize '50%'
     end
 
-    @image = Image.new
-    @image.image_file = @test_file
-    @image.save
+    @image = Image.create(image_file: File.open(@test_file))
+    # @image.image_file = @test_file
+    # @image.save
     # @image.intake_file(@test_file)
   end
   after do
