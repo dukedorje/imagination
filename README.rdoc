@@ -1,3 +1,82 @@
 = Imagination
 
-This project rocks and uses MIT-LICENSE.
+You have very specific uses for your user-uploaded images.  You want them to fit
+in your layout, to appear in your content streams, to show up in rows of tiny
+thumbnails, and each one involves very specific transformations.  You have a lot
+of content, and most of it is seldom referenced after more than a few months.
+Do you need an expensive third-party data store and edge cache like S3 and Cloudfront?
+
+All you really need is Imagination.
+
+This is an abstraction of a really sweet working image manipulation system for an
+existing Rails site.  It hasn't been field tested in its Gem form yet.  As such
+this is still very much a work in progress, and there is quite a roadmap ahead.
+Bug reports and messages of encouragement are welcome!
+
+== What does it do, really?
+You upload a file to your app.  You call the #intake_file method on your Image model,
+and the system writes it into a subdirectory under public/.
+
+You define a profile with calculations and MiniMagick commands in your model like so:
+
+  profile :header do |img, options|
+    new_height = 720*img.height/img.width # what the height will be with width 720
+    vertical_offset = (new_height / 2) - 100 # center of image
+
+    img.resize('720x') # width => 720.
+    img.combine_options do |c|
+      c.crop("720x200+0+#{vertical_offset}")
+      c.repage.+
+    end
+  end
+
+This will create a method on the model `#header`.  When it is called, a MiniMagick
+object wrapping the original uploaded image will be yielded to the profile block,
+which must return the results of the transformations.
+
+It will write the results of the image manipulation into another subdirectory under public/,
+and return the resulting file to be served directly from the app. (Please use X-Sendfile
+or X-Accel-Redirect and don't torture your ruby process by forcing it to do something
+it was not designed to!)
+
+You will want to set up Nginx rules so that whenever a file is found, nginx will
+simply serve the file; if it is not found, it falls through to the app, which
+has route matching rules that allow it to determine which profile on which image
+is being requested.
+
+Once your app gets to superstar status you may find the time comes to transition
+to a world edge cache like Cloudfront, etc.  However, you may also find that this system works better
+than you ever dreamed, and that becomes unnecessary.  Only time will tell.
+
+== Setup
+Add the gem to your Gemfile.
+Include the modules in your Activerecord class:
+
+  include ImageProfiles
+  include ImageFileManager
+
+The model requires a column called "image_path".
+
+== Roadmap
+On the list is supporting the more popular image attachment gems.  First on the
+list is my personal favorite, Refile.
+
+However, supporting refile will require a pretty significant refactoring.  Refile
+has an excellent separation of concerns.  In order to follow this pattern, the
+built-in edge caching layer (writing to public subdirectories) will have to be
+factored out into a separate optional layer, such as a mountable Rack app.
+
+This will greatly improve the design of the software and allow more Enterprise
+edge-cache products to be dropped-in, such as Cloudfront.
+
+The nginx+Rack pseudo edge cache could actually end up as a separate gem, since
+its utility extends beyond just generation of image profiles.
+
+=== TODO
+  * add in routes file
+  * Make a class method ActiveRecord mixin that includes the modules automatically
+  * provide example nginx rules
+  * allow any column name
+  * Support Refile
+  * IPFS-based edge cache server image replication :)
+  
