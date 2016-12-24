@@ -1,11 +1,13 @@
 
-module ImageProfiles
-  extend ActiveSupport::Concern
+module Imagination::ImageProfiles
+  def self.included(base)
+    base.extend(ClassMethods)
+  end
 
-  included do
-    cattr_accessor :profiles
+  module ClassMethods
+    attr_accessor :profiles
 
-    def self.profile(profile_name, &block)
+    def profile(profile_name, &block)
       self.profiles ||= {}
       self.profiles[profile_name.to_sym] = block
       define_method(profile_name) do |options={}|
@@ -14,17 +16,18 @@ module ImageProfiles
     end
   end
 
+
   def exec_profile(img, profile, options={})
-    proc = self.profiles[profile.to_sym]
+    proc = self.class.profiles[profile.to_sym]
     self.instance_exec(img, options, &proc)
   end
 
   def generate_profile(profile, options={})
-    raise "Profile #{profile} does not exist." unless self.profiles.keys.include?(profile.to_sym) # && self.respond_to?(profile.to_sym)
+    raise "Profile #{profile} does not exist." unless self.class.profiles.keys.include?(profile.to_sym) # && self.respond_to?(profile.to_sym)
     unless self.respond_to? :magick_image
-      raise "Model must have a 'magick_image' method which returns the image wrapped in the ImageMagick wrapper of your choice"
+      raise "The class must have a 'magick_image' method which returns the image wrapped in the ImageMagick wrapper of your choice"
     end
-    Rails.logger.info("Generating Profile: #{profile} #{options.inspect}")
+    # Rails.logger.info("Generating Profile: #{profile} #{options.inspect}")
 
     transformed_magick_image = exec_profile(self.magick_image, profile, options)
 
@@ -62,7 +65,7 @@ module ImageProfiles
   end
 
   def profile_generated?(profile, options={})
-    raise "Profile #{profile} does not exist." unless profiles.include?(profile)
+    raise "Profile #{profile} does not exist." unless self.class.profiles.include?(profile)
 
     File.exists?(file_path(profile, options))
   end

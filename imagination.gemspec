@@ -9,14 +9,12 @@ Gem::Specification.new do |s|
   s.version     = Imagination::VERSION
   s.authors     = ["Duke Dorje"]
   s.email       = ["duke.dorje@gmail.com"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of Imagination."
-  s.description = "TODO: Description of Imagination."
+  # s.homepage    = "TODO"
+  s.summary     = "Resize and cache images very easily."
+  s.description = "Imagination allows you to define image resize profiles, and automatically generate and cache the resized images."
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
 
-  s.add_dependency "rails", "~> 4.2.5"
-
-  s.add_development_dependency "sqlite3"
+  # s.add_development_dependency "sqlite3"
 end

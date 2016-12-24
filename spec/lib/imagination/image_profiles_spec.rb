@@ -1,16 +1,37 @@
-require 'rails_helper'
+require 'spec_helper'
+require 'imagination'
+require 'mini_magick'
+require 'byebug'
 
-describe ImageProfiles, :type => :model do
+TEST_FILE = '1f004.png' # 64x64 PNG
+
+class Image
+  include Imagination::ImageProfiles
+
+  def file_path(profile_name, options={})
+    base_path = profile_name ? TEST_PUBLIC_DIR : TEST_FILE_PATH
+    filename = profile_name ? "#{TEST_FILE}-#{profile_name}" : TEST_FILE
+    File.join(base_path, filename)
+  end
+
+  def magick_image(profile_name=nil, options={})
+    MiniMagick::Image.open(file_path(profile_name, options))
+  end
+
+  def save_profile(transformed_magick_image, profile, options)
+    transformed_magick_image.write(file_path(profile, options))
+  end
+end
+
+describe Imagination::ImageProfiles do
   before do
     setup_test_public_dir
-    @test_file = File.join(TEST_FILE_PATH, '1f004.png') # 64x64 PNG
 
     Image.profile(:test_profile) do |img, options|
       img.resize '50%'
     end
 
-    @image = Image.create
-    @image.intake_file(@test_file)
+    @image = Image.new
   end
   after do
     empty_test_public_dir
@@ -24,7 +45,6 @@ describe ImageProfiles, :type => :model do
   end
 
   context "#generate_profile" do
-
     it "transforms an image according to a profile" do
       @image.generate_profile( :test_profile )
 
@@ -36,12 +56,6 @@ describe ImageProfiles, :type => :model do
       expect( File.file?(@image.file_path(:test_profile)) ).to eq(false)
       @image.generate_profile( :test_profile )
       expect( File.file?(@image.file_path(:test_profile)) ).to eq(true)
-    end
-
-    it "works on a real profile" do
-      expect{ !@image.profile_generated?(:header) }
-      @image.generate_profile( :header )
-      expect{ @image.profile_generated?(:header) }
     end
   end
 

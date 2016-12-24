@@ -1,6 +1,6 @@
 require 'open-uri'
 
-module ImageFileManager
+module Imagination::ImageFileManager
   extend ActiveSupport::Concern
 
   UPLOAD_DIR = "imagebank"
