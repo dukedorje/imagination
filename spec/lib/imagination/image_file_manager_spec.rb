@@ -18,6 +18,7 @@ end
 
 describe Imagination::ImageFileManager do
   before do
+    Imagination.configuration.upload_path_prefix = TEST_PUBLIC_DIR
     setup_test_public_dir
     @test_file = File.join(TEST_FILE_PATH, '1f004.png')
   end
@@ -30,7 +31,7 @@ describe Imagination::ImageFileManager do
       image = Image.new
       upload_path = image.generate_relative_upload_path(@test_file)
       image.intake_file @test_file
-      expect( File.file?(File.join(TEST_PUBLIC_DIR, Image::UPLOAD_DIR, upload_path)) ).to eq(true)
+      expect( File.file?(File.join(TEST_PUBLIC_DIR, Imagination.configuration.upload_dir, upload_path)) ).to eq(true)
     end
 
     it "avoids name collisions on files" do
@@ -38,7 +39,7 @@ describe Imagination::ImageFileManager do
 
       # copy file of same name to force a collision
       first_upload_path = image.generate_relative_upload_path(@test_file)
-      upload_dir = File.join TEST_PUBLIC_DIR, Image::UPLOAD_DIR, File.dirname(first_upload_path)
+      upload_dir = File.join TEST_PUBLIC_DIR, Imagination.configuration.upload_dir, File.dirname(first_upload_path)
       FileUtils.mkdir_p(upload_dir)
       FileUtils.cp(@test_file, upload_dir)
 
@@ -61,14 +62,14 @@ describe Imagination::ImageFileManager do
       image = Image.new
       image_path = image.intake_file(@test_file)
 
-      expect( image.file_path ).to eq(File.join(TEST_PUBLIC_DIR, Image::UPLOAD_DIR, image.image_path))
+      expect( image.file_path ).to eq(File.join(TEST_PUBLIC_DIR, Imagination.configuration.upload_dir, image.image_path))
     end
 
     it "generates the path to a resized profile" do
       image = Image.new
       image.intake_file(@test_file)
 
-      expect( image.file_path(:header) ).to include(Image::CACHE_DIR)
+      expect( image.file_path(:header) ).to include(Imagination.configuration.cache_dir)
       expect( image.file_path(:header) ).to match(/\-header\.png/)
     end
   end
