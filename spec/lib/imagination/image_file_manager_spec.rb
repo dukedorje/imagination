@@ -1,9 +1,8 @@
 require 'spec_helper'
 require 'imagination'
-require 'mini_magick'
 require 'byebug'
 
-class Image
+class FileManagerImage
   include Imagination::ImageFileManager
   attr_accessor :image_path
 
@@ -28,14 +27,14 @@ describe Imagination::ImageFileManager do
 
   context "#intake_file" do
     it "copies the file we give it into the image uploads directory" do
-      image = Image.new
+      image = FileManagerImage.new
       upload_path = image.generate_relative_upload_path(@test_file)
       image.intake_file @test_file
       expect( File.file?(File.join(TEST_PUBLIC_DIR, Imagination.configuration.upload_dir, upload_path)) ).to eq(true)
     end
 
     it "avoids name collisions on files" do
-      image = Image.new
+      image = FileManagerImage.new
 
       # copy file of same name to force a collision
       first_upload_path = image.generate_relative_upload_path(@test_file)
@@ -52,21 +51,21 @@ describe Imagination::ImageFileManager do
 
     it "denies a non-image" do
       @test_file = File.join(TEST_FILE_PATH, 'test.pdf')
-      image = Image.new
+      image = FileManagerImage.new
       expect{image.intake_file(@test_file)}.to raise_error ImageException
     end
   end
 
   context "#file_path" do
     it "generates the path to the original file" do
-      image = Image.new
+      image = FileManagerImage.new
       image_path = image.intake_file(@test_file)
 
       expect( image.file_path ).to eq(File.join(TEST_PUBLIC_DIR, Imagination.configuration.upload_dir, image.image_path))
     end
 
     it "generates the path to a resized profile" do
-      image = Image.new
+      image = FileManagerImage.new
       image.intake_file(@test_file)
 
       expect( image.file_path(:header) ).to include(Imagination.configuration.cache_dir)
@@ -76,7 +75,7 @@ describe Imagination::ImageFileManager do
 
   context "#save_profile" do
     it "creates a file in the proper directory" do
-      image = Image.new
+      image = FileManagerImage.new
       image.intake_file(@test_file)
       image.save_profile(image.magick_image, :test_profile)
 

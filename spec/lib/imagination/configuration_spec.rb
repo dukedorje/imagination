@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'byebug'
 require 'imagination'
 
 describe Imagination::Configuration do
