@@ -8,7 +8,7 @@ TEST_FILE = '1f004.png' # 64x64 PNG
 class Image
   include Imagination::ImageProfiles
 
-  def file_path(profile_name, options={})
+  def file_path(profile_name=nil, options={})
     base_path = profile_name ? TEST_PUBLIC_DIR : TEST_FILE_PATH
     filename = profile_name ? "#{TEST_FILE}-#{profile_name}" : TEST_FILE
     File.join(base_path, filename)

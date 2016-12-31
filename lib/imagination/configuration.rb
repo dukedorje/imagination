@@ -4,6 +4,6 @@ class Imagination::Configuration
   def initialize
     self.upload_dir = 'images'
     self.cache_dir = 'images-cache'
-    self.adapter = ::Imagination::Adapters::MiniMagickAdapter
+    # Note: An adapter must be specified
   end
 end

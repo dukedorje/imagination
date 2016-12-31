@@ -15,7 +15,6 @@ module Imagination
   end
 end
 
-
 require "imagination/image_profiles"
 require "imagination/image_file_manager"
 require "imagination/image_exception"

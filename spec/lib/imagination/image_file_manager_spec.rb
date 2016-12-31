@@ -9,10 +9,10 @@ class FileManagerImage
   def created_at
     Time.now
   end
+end
 
-  def magick_image(profile_name=nil, options={})
-    MiniMagick::Image.open(file_path(profile_name, options))
-  end
+Imagination.configure do |config|
+  config.adapter = Imagination::Adapters::MiniMagickAdapter.new
 end
 
 describe Imagination::ImageFileManager do
